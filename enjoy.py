@@ -10,7 +10,7 @@ from opencat_gym_env import OpenCatGymEnv
 env = OpenCatGymEnv()
 check_env(env)
 
-model = SAC.load("sac_opencat_desperate_long_learn")
+model = SAC.load("trained/sac_opencat_crawl")
 obs = env.reset()
 
 for _ in range(500):
