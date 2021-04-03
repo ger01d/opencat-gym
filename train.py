@@ -14,12 +14,12 @@ check_env(env)
 #env = make_vec_env(lambda: env, n_envs=25) # only for PPO
 model = SAC('MlpPolicy', env, learning_starts = 20000, use_sde=False, use_sde_at_warmup=False, verbose=1).learn(1000000)
 
-model.save("sac_opencat_desperate_long_learn")
-model.save_replay_buffer("sac_replay_buffer_desperate_long_learn")
+model.save("sac_opencat")
+model.save_replay_buffer("sac_replay_buffer")
 
 # Load model to continue previous training
-#model = SAC.load("sac_opencat_desperate", env, verbose=1)
-#model.load_replay_buffer("sac_replay_buffer_desperate")
-#model.learn(500000) #tensorboard_log="./a2c_opencat_tensorboard/").learn(10000000)
+#model = SAC.load("sac_opencat", env, verbose=1)
+#model.load_replay_buffer("sac_replay_buffer")
+#model.learn(500000) #tensorboard_log="./opencat_tensorboard/").learn(10000000)
 
 
