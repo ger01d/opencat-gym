@@ -10,7 +10,7 @@ from opencat_gym_env_boundAngles_joint_history import OpenCatGymEnv
 env = OpenCatGymEnv()
 check_env(env)
 
-model = SAC.load("sac_opencat")
+model = SAC.load("trained/sac_opencat_joint_history")
 obs = env.reset()
 
 for _ in range(500):
