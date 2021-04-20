@@ -14,6 +14,8 @@ MAX_EPISODE_LEN = 500  # Number of steps for one training episode
 REWARD_FACTOR = 1000
 REWARD_WEIGHT_1 = 1.0
 REWARD_WEIGHT_2 = 1.0
+BOUND_ANGLE = 40
+STEP_ANGLE = 15 # Maximum angle delta per step
 
 
 class OpenCatGymEnv(gym.Env):
@@ -26,7 +28,7 @@ class OpenCatGymEnv(gym.Env):
         self.step_counter = 0
         self.state_robot_history = np.array([])
         self.jointAngles_history = np.array([])
-        self.boundAngles = np.deg2rad(70)
+        self.boundAngles = np.deg2rad(BOUND_ANGLE)
 
         p.connect(p.GUI) #, options="--width=960 --height=540 --mp4=\"training.mp4\" --mp4fps=60") # uncommend to create a video
         p.configureDebugVisualizer(p.COV_ENABLE_GUI, 0)
@@ -35,8 +37,8 @@ class OpenCatGymEnv(gym.Env):
         # The action space are the 8 joint angles        
         self.action_space = spaces.Box(np.array([-1]*8), np.array([1]*8))
 
-        # The observation space are the torso roll, pitch and the joint angles incl. the last 5 steps
-        self.observation_space = spaces.Box(np.array([-1]*70), np.array([1]*70))
+        # The observation space are the torso roll, pitch and the joint angles and a history of the last 20 joint angles
+        self.observation_space = spaces.Box(np.array([-1]*166), np.array([1]*166))
  
 
     def step(self, action):
@@ -44,13 +46,23 @@ class OpenCatGymEnv(gym.Env):
         
         lastPosition = p.getBasePositionAndOrientation(self.robotUid)[0][0]
         jointAngles = np.asarray(p.getJointStates(self.robotUid, self.jointIds), dtype=object)[:,0]
-        ds = np.deg2rad(10) # Maximum joint angle derivative (maximum change per step)
+        ds = np.deg2rad(STEP_ANGLE) # Maximum joint angle derivative (maximum change per step)
         jointAngles += action * ds  # Change per step including agent action
         
         # Apply joint boundaries       
-        jointAngles = np.clip(jointAngles, -self.boundAngles, self.boundAngles)
-        self.jointAngles_history = np.append(self.jointAngles_history, jointAngles)
-        self.jointAngles_history = np.delete(self.jointAngles_history, np.s_[0:8])
+        jointAngles[0] = np.clip(jointAngles[0], -self.boundAngles, self.boundAngles)       # shoulder_left
+        jointAngles[1] = np.clip(jointAngles[1], 0, self.boundAngles)                       # elbow_left
+        jointAngles[2] = np.clip(jointAngles[2], -self.boundAngles, self.boundAngles)       # shoulder_right
+        jointAngles[3] = np.clip(jointAngles[3], 0, self.boundAngles)                       # elbow_right
+        jointAngles[4] = np.clip(jointAngles[4], -self.boundAngles, 0)                      # hip_right
+        jointAngles[5] = np.clip(jointAngles[5], -self.boundAngles, 0)                      # knee_right
+        jointAngles[6] = np.clip(jointAngles[6], -self.boundAngles, 0)                      # hip_left
+        jointAngles[7] = np.clip(jointAngles[7], -self.boundAngles, 0)                      # knee_left
+        
+        
+        if(self.step_counter % 2 == 0): # Every 2nd iteration will be added to the joint history
+            self.jointAngles_history = np.append(self.jointAngles_history, jointAngles)
+            self.jointAngles_history = np.delete(self.jointAngles_history, np.s_[0:8])
           
         # Set new joint angles
         p.setJointMotorControlArray(self.robotUid, self.jointIds, p.POSITION_CONTROL, jointAngles)
@@ -63,8 +75,7 @@ class OpenCatGymEnv(gym.Env):
         state_robot_vel = state_robot_vel[0:2]
         state_robot_vel_norm = normalize(state_robot_vel.reshape(-1,1))
 
-        self.state_robot_history = np.append(self.state_robot_history, np.concatenate((state_robot_ang, state_robot_vel_norm.reshape(1,-1)[0])))
-        self.state_robot_history = np.delete(self.state_robot_history, np.s_[0:6])
+        self.state_robot = np.concatenate((state_robot_ang, state_robot_vel_norm.reshape(1,-1)[0]))
         
         # Reward is the advance in x-direction
         currentPosition = p.getBasePositionAndOrientation(self.robotUid)[0][0] # Position in x-direction of torso-link
@@ -78,8 +89,8 @@ class OpenCatGymEnv(gym.Env):
             done = True
 
         info = {}
-        self.observation = np.hstack((self.state_robot_history, self.jointAngles_history/self.boundAngles))
-        
+        self.observation = np.hstack((self.state_robot, self.jointAngles_history/self.boundAngles))
+
         return np.array(self.observation).astype(np.float32), reward, done, info
         
  
@@ -104,6 +115,7 @@ class OpenCatGymEnv(gym.Env):
 
         for j in range(p.getNumJoints(self.robotUid)):
             info = p.getJointInfo(self.robotUid, j)
+            #print(info)
             jointName = info[1]
             jointType = info[2]
 
@@ -111,14 +123,12 @@ class OpenCatGymEnv(gym.Env):
                 self.jointIds.append(j)
                 paramIds.append(p.addUserDebugParameter(jointName.decode("utf-8")))
                 
-        #resetPos = np.deg2rad(np.array([30, 30, 30, 30, -30, -30, -30, -30]))
-        resetPos = np.zeros(8)
-
+        resetPos = np.deg2rad(np.array([30, 30, 30, 30, -30, -30, -30, -30]))
+        #resetPos = np.zeros(8)
+    
         # Reset joint position to rest pose
         for i in range(len(paramIds)):
             p.resetJointState(self.robotUid,i, resetPos[i])
-
-
 
 
         # Read robot state (pitch, roll and their derivatives of the torso-link)
@@ -126,14 +136,13 @@ class OpenCatGymEnv(gym.Env):
         state_robot_vel = np.asarray(p.getBaseVelocity(self.robotUid)[1])
         state_robot_vel = state_robot_vel[0:2]
         state_robot_vel = normalize(state_robot_vel.reshape(-1,1))
-        state_robot = np.concatenate((state_robot_ang, state_robot_vel.reshape(1,-1)[0]))
+        self.state_robot = np.concatenate((state_robot_ang, state_robot_vel.reshape(1,-1)[0]))
         
         # Initialize robot state history with reset position
-        self.state_robot_history = np.tile(state_robot,5)   
         state_joints = np.asarray(p.getJointStates(self.robotUid, self.jointIds), dtype=object)[:,0]   
-        self.jointAngles_history = np.tile(state_joints, 5)
+        self.jointAngles_history = np.tile(state_joints, 20)
         
-        self.observation = np.concatenate((self.state_robot_history ,self.jointAngles_history/self.boundAngles))
+        self.observation = np.concatenate((self.state_robot ,self.jointAngles_history/self.boundAngles))
         p.configureDebugVisualizer(p.COV_ENABLE_RENDERING,1) # Re-activate rendering
         
         return np.array(self.observation).astype(np.float32)
@@ -148,11 +157,11 @@ class OpenCatGymEnv(gym.Env):
 
 
     def is_fallen(self):
-        """ Check if robot is fallen. It becomes "True", when pitch or roll is more than 0.3 rad or the z-position of the torso is below 0.05 m.
+        """ Check if robot is fallen. It becomes "True", when pitch or roll is more than 0.9 rad.
         """
 
         position, orientation = p.getBasePositionAndOrientation(self.robotUid)
         orientation = p.getEulerFromQuaternion(orientation)
-        is_fallen = np.fabs(orientation[0]) > 0.9 or np.fabs(orientation[1]) > 0.9 #or np.fabs(position[2]) < 0.00
+        is_fallen = np.fabs(orientation[0]) > 0.9 or np.fabs(orientation[1]) > 0.9
         
         return is_fallen

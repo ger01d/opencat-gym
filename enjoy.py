@@ -4,13 +4,13 @@ import pybullet as p
 from stable_baselines3 import PPO, A2C, SAC
 from stable_baselines3.common.env_checker import check_env
 from stable_baselines3.common.env_util import make_vec_env
-from opencat_gym_env import OpenCatGymEnv
+from opencat_gym_env_boundAngles_joint_history import OpenCatGymEnv
 
 # Create OpenCatGym environment from class
 env = OpenCatGymEnv()
 check_env(env)
 
-model = SAC.load("trained/sac_opencat_crawl")
+model = SAC.load("sac_opencat")
 obs = env.reset()
 
 for _ in range(500):
