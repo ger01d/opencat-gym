@@ -2,10 +2,10 @@
 A gym reinforcement learning environment for OpenCat robots based on Stable-Baselines3 and PyBullet.
 
 ## Nybble version
-![](nybble_learning.gif)
+![](animations/nybble_learning.gif)
 
 ## Bittle version
-![](bittle_learning.gif)
+![](animations/bittle_learning.gif)
 
 ## Usage
 Start training with train_nybble.py or train_bittle.py
