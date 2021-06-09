@@ -108,7 +108,7 @@ class OpenCatGymEnv(gym.Env):
         startPos = [0,0,0.08]
         startOrientation = p.getQuaternionFromEuler([0,0,0])
 
-        self.robotUid = p.loadURDF("nybble.urdf",startPos, startOrientation)
+        self.robotUid = p.loadURDF("models/nybble.urdf",startPos, startOrientation)
         
         self.jointIds = []
         paramIds = []
