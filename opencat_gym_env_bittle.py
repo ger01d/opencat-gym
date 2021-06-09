@@ -123,7 +123,7 @@ class OpenCatGymEnv(gym.Env):
         startPos = [0,0,0.08]
         startOrientation = p.getQuaternionFromEuler([0,0,0])
 
-        self.robotUid = p.loadURDF("bittle.urdf",startPos, startOrientation)
+        self.robotUid = p.loadURDF("models/bittle.urdf",startPos, startOrientation)
         
         self.jointIds = []
         paramIds = []
