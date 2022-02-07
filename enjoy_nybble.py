@@ -14,10 +14,9 @@ model = SAC.load("trained/sac_opencat_joint_history")
 obs = env.reset()
 
 for _ in range(500):
-    
     action, _state = model.predict(obs, deterministic=True)
     obs, reward, done, info = env.step(action)
     env.render(mode="human")
     if done:
-	    obs = env.reset()
+        obs = env.reset()
     time.sleep(1./240.)

@@ -8,15 +8,12 @@ import time
 
 from sklearn.preprocessing import normalize
 
-
-
 MAX_EPISODE_LEN = 500  # Number of steps for one training episode
 REWARD_FACTOR = 1000
 REWARD_WEIGHT_1 = 1.0
 REWARD_WEIGHT_2 = 1.0
 BOUND_ANGLE = 40
 STEP_ANGLE = 15 # Maximum angle delta per step
-
 
 class OpenCatGymEnv(gym.Env):
     """ Gym environment (stable baselines 3) for OpenCat robots.
