@@ -9,9 +9,8 @@ import time
 from sklearn.preprocessing import normalize
 
 MAX_EPISODE_LEN = 500  # Number of steps for one training episode
-REWARD_FACTOR = 1000
+REWARD_FACTOR = 10
 REWARD_WEIGHT_1 = 1.0
-REWARD_WEIGHT_2 = 1.0
 BOUND_ANGLE = 40
 STEP_ANGLE = 15 # Maximum angle delta per step
 
@@ -78,7 +77,9 @@ class OpenCatGymEnv(gym.Env):
         
         # Reward is the advance in x-direction - deviation in the y-direction
         currentPosition = p.getBasePositionAndOrientation(self.robotUid)[0] # Position of torso-link
-        reward = REWARD_WEIGHT_1 * ((currentPosition[0] - lastPosition[0]) - (abs(currentPosition[1]) - abs(lastPosition[1]))) * REWARD_FACTOR
+        foward_factor = currentPosition[0] - lastPosition[0]
+        horizontal_factor = (abs(currentPosition[1]) - abs(lastPosition[1])) / 2
+        reward = REWARD_WEIGHT_1 * (foward_factor - horizontal_factor) * REWARD_FACTOR
         done = False
         
         # Stop criteria of current learning episode: Number of steps or robot fell

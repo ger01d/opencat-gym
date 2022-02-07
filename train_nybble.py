@@ -10,7 +10,7 @@ if __name__ == '__main__':
     try:
         env = OpenCatGymEnv(render=False)
         env = make_vec_env(lambda: env, n_envs=1) # 25 for PPO
-        env = VecNormalize(env, training=True, norm_obs=True, norm_reward=True) # This might be necessary or break things
+        env = VecNormalize(env, training=True, norm_obs=True, norm_reward=True) # This might be necessary or break things, https://stable-baselines3.readthedocs.io/en/master/guide/examples.html#pybullet-normalizing-input-features
 
         model = SAC("MlpPolicy", env, verbose=1, tensorboard_log="./tensorboard/")
         model.learn(total_timesteps=500000)

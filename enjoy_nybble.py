@@ -10,7 +10,7 @@ from opencat_gym_env_nybble import OpenCatGymEnv
 # Create OpenCatGym environment from class
 env = OpenCatGymEnv(render=True)
 env = make_vec_env(lambda: env, n_envs=1)
-env = VecNormalize(env, norm_obs=True) # This might be necessary or break things
+env = VecNormalize(env, training=False, norm_reward=False, norm_obs=True) # This might be necessary or break things, https://stable-baselines3.readthedocs.io/en/master/guide/examples.html#pybullet-normalizing-input-features
 
 model = SAC.load("sac_opencat")
 obs = env.reset()
