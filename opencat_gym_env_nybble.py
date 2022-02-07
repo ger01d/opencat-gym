@@ -21,13 +21,16 @@ class OpenCatGymEnv(gym.Env):
     
     metadata = {'render.modes': ['human']}
 
-    def __init__(self):
+    def __init__(self, render=True):
         self.step_counter = 0
         self.state_robot_history = np.array([])
         self.jointAngles_history = np.array([])
         self.boundAngles = np.deg2rad(BOUND_ANGLE)
 
-        p.connect(p.GUI) #, options="--width=960 --height=540 --mp4=\"training.mp4\" --mp4fps=60") # uncommend to create a video
+        if render:
+            p.connect(p.GUI) #, options="--width=960 --height=540 --mp4=\"training.mp4\" --mp4fps=60") # uncommend to create a video
+        else:
+            p.connect(p.DIRECT)
         p.configureDebugVisualizer(p.COV_ENABLE_GUI, 0)
         p.resetDebugVisualizerCamera(cameraDistance=0.5, cameraYaw=-10, cameraPitch=-40, cameraTargetPosition=[0.4,0,0])
         
