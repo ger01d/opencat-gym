@@ -6,16 +6,15 @@ from opencat_gym_env_nybble import OpenCatGymEnv
 import torch
 
 if __name__ == '__main__':
-    print(torch.cuda.is_available())
     # Training
     try:
-        env = OpenCatGymEnv()
+        env = OpenCatGymEnv(render=False)
         env = make_vec_env(lambda: env, n_envs=1) # 25 for PPO
         env = VecNormalize(env, training=True, norm_obs=True, norm_reward=True) # This might be necessary or break things
 
-        model = SAC("MlpPolicy", env, verbose=1)
-        model.learn(total_timesteps=25000)
-
+        model = SAC("MlpPolicy", env, verbose=1, tensorboard_log="./tensorboard/")
+        model.learn(total_timesteps=500000)
+        model.save("sac_opencat")
     except KeyboardInterrupt:
         model.save("sac_opencat")
 

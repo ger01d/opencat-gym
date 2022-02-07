@@ -7,10 +7,10 @@ from stable_baselines3.common.env_util import make_vec_env
 from opencat_gym_env_nybble import OpenCatGymEnv
 
 # Create OpenCatGym environment from class
-env = OpenCatGymEnv()
+env = OpenCatGymEnv(render=True)
 check_env(env)
 
-model = SAC.load("trained/sac_opencat_joint_history")
+model = SAC.load("sac_opencat")
 obs = env.reset()
 
 for _ in range(500):

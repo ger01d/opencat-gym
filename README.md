@@ -2,7 +2,10 @@
 A gym reinforcement learning environment for the Nybble OpenCat robot based on Stable-Baselines3 and PyBullet.
 
 ## Usage
-Start training with train_nybble.py
+You should use a virtual environment. (python3 -m venv .venv)
+pip install -r requirements.txt
+You may need to install torch with CUDA for GPU usage. https://pytorch.org/get-started/locally/
+Start training with train_nybble.py or use the Google Colab example train-colab.ipynb
 To take a look at the pre-trained example, execute enjoy_nybble.py.
 
 ## Links

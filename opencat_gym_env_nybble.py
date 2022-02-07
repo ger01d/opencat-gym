@@ -39,12 +39,11 @@ class OpenCatGymEnv(gym.Env):
 
         # The observation space are the torso roll, pitch and the joint angles and a history of the last 20 joint angles
         self.observation_space = spaces.Box(np.array([-1]*166), np.array([1]*166))
- 
 
     def step(self, action):
         p.configureDebugVisualizer(p.COV_ENABLE_SINGLE_STEP_RENDERING)
         
-        lastPosition = p.getBasePositionAndOrientation(self.robotUid)[0][0]
+        lastPosition = p.getBasePositionAndOrientation(self.robotUid)[0]
         jointAngles = np.asarray(p.getJointStates(self.robotUid, self.jointIds), dtype=object)[:,0]
         ds = np.deg2rad(STEP_ANGLE) # Maximum joint angle derivative (maximum change per step)
         jointAngles += action * ds  # Change per step including agent action
@@ -77,9 +76,9 @@ class OpenCatGymEnv(gym.Env):
 
         self.state_robot = np.concatenate((state_robot_ang, state_robot_vel_norm.reshape(1,-1)[0]))
         
-        # Reward is the advance in x-direction
-        currentPosition = p.getBasePositionAndOrientation(self.robotUid)[0][0] # Position in x-direction of torso-link
-        reward = REWARD_WEIGHT_1 * (currentPosition - lastPosition) * REWARD_FACTOR
+        # Reward is the advance in x-direction - deviation in the y-direction
+        currentPosition = p.getBasePositionAndOrientation(self.robotUid)[0] # Position of torso-link
+        reward = REWARD_WEIGHT_1 * ((currentPosition[0] - lastPosition[0]) - (abs(currentPosition[1]) - abs(lastPosition[1]))) * REWARD_FACTOR
         done = False
         
         # Stop criteria of current learning episode: Number of steps or robot fell
@@ -92,8 +91,6 @@ class OpenCatGymEnv(gym.Env):
         self.observation = np.hstack((self.state_robot, self.jointAngles_history/self.boundAngles))
 
         return np.array(self.observation).astype(np.float32), reward, done, info
-        
- 
 
     def reset(self):
         self.step_counter = 0
@@ -147,14 +144,11 @@ class OpenCatGymEnv(gym.Env):
         
         return np.array(self.observation).astype(np.float32)
 
-
     def render(self, mode='human'):
         pass
 
-
     def close(self):
         p.disconnect()
-
 
     def is_fallen(self):
         """ Check if robot is fallen. It becomes "True", when pitch or roll is more than 0.9 rad.
