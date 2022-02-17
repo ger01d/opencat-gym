@@ -10,7 +10,7 @@ To take a look at the pre-trained example, execute enjoy_nybble.py.
 
 ## TODO
 Implement https://arxiv.org/pdf/1812.11103.pdf.  
-Improve 3D model.  
+~~Improve 3D model.~~
 Compare algorithms.  
 ## Links
 For more information on the reinforcement training implementation: https://stable-baselines3.readthedocs.io/en/master/index.html  
