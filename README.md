@@ -4,6 +4,9 @@ A gym reinforcement learning environment for OpenCat robots based on Stable-Base
 ## Training example
 ![](animations/trained_agent.gif)
 
+## Application on Bittle
+![](animations/application.gif)
+
 ## Usage
 Start training with "python train.py".
 To take a look at the pre-trained example, execute "python enjoy.py".
