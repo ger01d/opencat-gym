@@ -1,15 +1,12 @@
 # OpenCat Gym
 A gym reinforcement learning environment for OpenCat robots based on Stable-Baselines3 and PyBullet.
 
-## Nybble version
-![](animations/nybble_learning.gif)
-
-## Bittle version
-![](animations/bittle_learning.gif)
+## Training example
+![](animations/trained_agent.gif)
 
 ## Usage
-Start training with train_nybble.py or train_bittle.py
-To take a look at the pre-trained example, execute enjoy_nybble.py or enjoy_bittle.py.
+Start training with "python train.py".
+To take a look at the pre-trained example, execute "python enjoy.py".
 
 ## Links
 For more information on the reinforcement training implementation: https://stable-baselines3.readthedocs.io/en/master/index.html
