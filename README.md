@@ -9,11 +9,11 @@ A gym reinforcement learning environment for OpenCat robots based on Stable-Base
 
 ## Usage
 Start training with 
-```python 
+``` 
 python train.py 
 ```
 To take a look at the pre-trained example, execute 
-```python 
+``` 
 python enjoy.py
 ```
 
