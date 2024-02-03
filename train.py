@@ -11,13 +11,19 @@ from opencat_gym_env import OpenCatGymEnv
 if __name__ == "__main__":
     # Set up number of parallel environments
     parallel_env = 8
-    env = make_vec_env(OpenCatGymEnv, n_envs=parallel_env, vec_env_cls=SubprocVecEnv) # only for PPO
+    env = make_vec_env(OpenCatGymEnv, 
+                       n_envs=parallel_env, 
+                       vec_env_cls=SubprocVecEnv)
 
     # Change architecture of neural network to two hidden layers of size 256
     custom_arch = dict(net_arch=[256, 256])
 
     # Define PPO agent and train
-    model = PPO('MlpPolicy', env, seed=42, policy_kwargs=custom_arch, n_steps=int(2048*8/parallel_env), verbose=1).learn(2e6)
+    model = PPO('MlpPolicy', env, seed=42, 
+                policy_kwargs=custom_arch, 
+                n_steps=int(2048*8/parallel_env), 
+                verbose=1).learn(2e6)
+
     model.save("trained/opencat_gym_esp32_trained_controller")
 
     # Load model to continue previous training
@@ -26,6 +32,5 @@ if __name__ == "__main__":
     #                   n_steps=int(2048*8/parallel_env), verbose=1, 
     #                   tensorboard_log="trained/tensorboard_logs/").learn(2e6)
     #model.save("trained/opencat_gym_esp32_trained_controller_2")
-
 
 
