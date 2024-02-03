@@ -13,6 +13,7 @@ To take a look at the pre-trained example, execute
 ``` 
 python enjoy.py
 ```
+Alternatively you can open `opencat-gym.ipyn` in Jupyter notebook and perform training.
 
 ## Links
 For more information on the reinforcement training implementation: https://stable-baselines3.readthedocs.io/en/master/index.html
