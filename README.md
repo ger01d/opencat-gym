@@ -1,11 +1,8 @@
 # OpenCat Gym
 A gym reinforcement learning environment for OpenCat robots based on Stable-Baselines3 and PyBullet.
 
-## Training example
-![](animations/trained_agent.gif)
-
-## Application on Bittle
-![](animations/application.gif)
+## Simulation and Application
+<img src=animations/trained_agent.gif width="500" /> <img src=animations/application.gif width="500" />
 
 ## Usage
 Start training with 
