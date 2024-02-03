@@ -38,7 +38,7 @@ PAW_Z_TARGET = 0.005      # Target height (m) of paw during swing phase
 
 ## Links
 For more information on the reinforcement training implementation: https://stable-baselines3.readthedocs.io/en/master/index.html
-And for the simulation environment please refer to: https://pybullet.org/wordpress/
+And for the simulation environment please refer to: https://pybullet.org/wordpress/ \
 The API for creating the training environment: https://gymnasium.farama.org/
 
 ## Related Work
