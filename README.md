@@ -23,3 +23,4 @@ And for the simulation environment please refer to: https://pybullet.org/wordpre
 
 ## Previous Work
 The reward and penalty functions are based on: https://www.nature.com/articles/s41598-023-38259-7
+Including a joint angle history was inspired by: https://www.science.org/doi/10.1126/scirobotics.aau5872
