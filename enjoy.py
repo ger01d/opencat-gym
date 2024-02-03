@@ -8,7 +8,7 @@ from opencat_gym_env import OpenCatGymEnv
 # Create OpenCatGym environment from class
 parallel_env = 1
 env = make_vec_env(OpenCatGymEnv, n_envs=parallel_env)
-model = PPO.load("trained/opencat_gym_release_local_2e6")
+model = PPO.load("trained/trained_agent_PPO")
 
 obs = env.reset()
 sum_reward = 0
