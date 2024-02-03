@@ -3,7 +3,7 @@ import pybullet as p
 from stable_baselines3 import PPO, SAC
 from stable_baselines3.common.env_checker import check_env
 from stable_baselines3.common.env_util import make_vec_env
-from opencat_gym_esp32_env import OpenCatGymEnv
+from opencat_gym_env import OpenCatGymEnv
 
 # Create OpenCatGym environment from class
 parallel_env = 1
