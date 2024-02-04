@@ -19,7 +19,7 @@ To take a look at the pre-trained example, execute
 ``` 
 python enjoy.py
 ```
-Alternatively you can open `opencat-gym.ipyn` in Jupyter notebook and perform training.
+Alternatively you can run [`opencat-gym.ipyn`](https://github.com/ger01d/opencat-gym/blob/main/opencat-gym.ipynb) in Jupyter notebook and perform training.
 
 ### Playing with training parameters
 The training parameters are listed as constants in the `opencat-gym-env.py`. They change the weight of the reward-function.
